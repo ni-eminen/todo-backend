@@ -11,7 +11,7 @@ func main() {
 
     models.ConnectDatabase()  // new!
 
-    // ...
+    router.POST("/notes", controllers.CreateNote)  // here!
 
     router.Run("localhost:8080")
 }
