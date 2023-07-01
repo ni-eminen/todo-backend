@@ -1,17 +1,22 @@
 package main
 
 import (
-    "github.com/ni-eminen/todo-backend/models"
-
-    "github.com/gin-gonic/gin"
+	"github.com/gin-contrib/cors"
+	"github.com/gin-gonic/gin"
+	"github.com/ni-eminen/todo-backend/controllers"
+	"github.com/ni-eminen/todo-backend/models"
 )
 
 func main() {
-    router := gin.Default()
+	router := gin.Default()
+	router.Use(cors.Default())
+	models.ConnectDatabase()
 
-    models.ConnectDatabase()  // new!
+	router.POST("/notes", controllers.CreateNote) // here!
+	router.GET("/notes", controllers.FindNotes)
+	router.GET("/notes/:id", controllers.FindNote)
+	router.PATCH("/ntoes/:id", controllers.UpdateNote)
+	router.DELETE("/posts/:id", controllers.DeleteNote)
 
-    router.POST("/notes", controllers.CreateNote)  // here!
-
-    router.Run("localhost:8080")
+	router.Run("localhost:8080")
 }
