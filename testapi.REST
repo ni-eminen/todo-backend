@@ -1,9 +1,6 @@
-get http://localhost:8080/notes HTTP/1.1
+patch  http://localhost:8080/notes/5ac815d9-6500-4a04-afb1-50ea318eb474 HTTP/1.1
 content-type: application/json
 
-# {
-# "body": "this is a test",
-# "category": "/t",
-# "timestamp": 123,
-# "selected": true,
-# }
+{
+"selectedTimestamp": 1688657459000
+}

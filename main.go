@@ -15,8 +15,8 @@ func main() {
 	router.POST("/notes", controllers.CreateNote) // here!
 	router.GET("/notes", controllers.FindNotes)
 	router.GET("/notes/:id", controllers.FindNote)
-	router.PATCH("/ntoes/:id", controllers.UpdateNote)
-	router.DELETE("/posts/:id", controllers.DeleteNote)
+	router.PATCH("/notes/:id", controllers.UpdateNote)
+	router.DELETE("/notes/:id", controllers.DeleteNote)
 
 	router.Run("localhost:8080")
 }

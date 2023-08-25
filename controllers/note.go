@@ -9,19 +9,23 @@ import (
 )
 
 type CreateNoteInput struct {
-	Id        string `json:"id" binding:"required"`
-	Body      string `json:"body" binding:"required"`
-	Category  string `json:"category" binding:"required"`
-	Timestamp uint   `json:"timestamp" binding:"required"`
-	Selected  *bool  `json:"selected" binding:"required"`
+	Id                string `json:"id" binding:"required"`
+	Body              string `json:"body" binding:"required"`
+	Category          string `json:"category" binding:"required"`
+	Timestamp         uint   `json:"timestamp" binding:"required"`
+	Selected          *bool  `json:"selected" binding:"required"`
+	SelectedTimestamp uint   `json:"selectedTimestamp" binding:"required"`
+	Archived          *bool  `json:"archived" binding:"required"`
 }
 
 type UpdateNoteInput struct {
-	Id        string `json:"id"`
-	Body      string `json:"body"`
-	Category  string `json:"category"`
-	Timestamp uint   `json:"timestamp"`
-	Selected  *bool  `json:"selected"`
+	Id                string `json:"id"`
+	Body              string `json:"body"`
+	Category          string `json:"category"`
+	Timestamp         uint   `json:"timestamp"`
+	Selected          *bool  `json:"selected"`
+	SelectedTimestamp uint   `json:"selectedTimestamp"`
+	Archived          *bool  `json:"archived"`
 }
 
 func CreateNote(c *gin.Context) {
@@ -31,7 +35,7 @@ func CreateNote(c *gin.Context) {
 		return
 	}
 
-	note := models.Note{Id: input.Id, Body: input.Body, Category: input.Category, Timestamp: input.Timestamp, Selected: *input.Selected}
+	note := models.Note{Id: input.Id, Body: input.Body, Category: input.Category, Timestamp: input.Timestamp, Selected: *input.Selected, SelectedTimestamp: input.SelectedTimestamp, Archived: *input.Archived}
 	models.DB.Create(&note)
 
 	c.JSON(http.StatusOK, gin.H{"data": note})
@@ -56,7 +60,7 @@ func FindNote(c *gin.Context) {
 
 func UpdateNote(c *gin.Context) {
 	var note models.Note
-	if err := models.DB.Where("id = ?").First(&note).Error; err != nil {
+	if err := models.DB.Where("id = ?", c.Param("id")).First(&note).Error; err != nil {
 		c.AbortWithStatusJSON(http.StatusNotFound, gin.H{"error": "Note not found"})
 		return
 	}
@@ -68,9 +72,7 @@ func UpdateNote(c *gin.Context) {
 		return
 	}
 
-	updatedNote := models.Note{Id: input.Id, Body: input.Body, Category: input.Category, Timestamp: input.Timestamp, Selected: *input.Selected}
-
-	models.DB.Model(&note).Updates(&updatedNote)
+	models.DB.Model(&note).Updates(input)
 	c.JSON(http.StatusOK, gin.H{"data": note})
 }
 
